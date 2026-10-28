@@ -44,7 +44,7 @@
 
 ### 2.3 `is_kol`【已证实】
 - 注释："1是kol，2否"。134 个 `is_kol=1` 的 uid 全部在 `dex_server_user.user_kol`（共 225 条，`kol_type` 全为 1）中。
-- **是写行当时的快照**：20 个现在在 `user_kol` 里的 uid 早期行是 `is_kol=2`，在 `user_kol.ctime` 之后变为 1。例：97547 `ctime=2026-03-24`，0209–0323 为 2、0324 起为 1；100041 同理。
+- **是写行当时的快照**：20 个在 `user_kol` 里的 uid 有 `is_kol=2` 的行，其中 14 个后来变成 1，在 `user_kol.ctime` 之后变为 1。例：97547 `ctime=2026-03-24`，0209–0323 为 2、0324 起为 1；100041 同理。
 - **KOL 关闭（`user_kol.status=0`）后仍是 1**：97547 于 2026-04-24 关闭，`is_kol=1` 一直持续到 0927。⇒ `is_kol=1` ≈ "当时在 user_kol 表里（不论 status）"。
 - `user_kol` 现有 225 条中只有 94 条 `status=1`；134 个曾在表里出现过（其余 91 个 KOL 从未有过动静）。
 
@@ -99,7 +99,7 @@
 | `{chain}_transaction_fee` | **直属**手续费按链拆分 | 同上（Σ 各链 = `dir_transaction_fee` 10,198/10,274） |
 | `{chain}_rebate_volume` | 本人收到的返佣按链拆分 | 推断：Σ 各链 = `rebate_volume` 10,054/10,274 |
 
-例：0901 的 66570 行，`transaction_volume=0`、`dir_transaction_volume=65.77`、`sol_transaction_volume=65.77`；其下级 98699 行 `transaction_volume=65.77`、`sol_transaction_volume=0`。
+例：20261001 的 66570 行，`transaction_volume=0`、`dir_transaction_volume=65.77`、`sol_transaction_volume=65.77`；其下级 98699 行 `transaction_volume=65.77`、`sol_transaction_volume=0`。
 
 **缺链**：101 行（全部在 **2026-07-17 之后**）各链之和 < `dir_transaction_volume`，从不大于。说明 7 月中旬起有一条新链（推断为 Robinhood 链或其他）计入总额但**没有单独列**。
 
@@ -120,7 +120,7 @@
 |---|---|
 | KOL 行 `transaction_volume=0`、`dir_transaction_volume>0` | **不总成立**。`transaction_volume` 是 KOL 本人交易额，KOL 自己也交易（373 行本人、直属都 >0；56422@0401 本人 2177、直属 0）。只是大部分 KOL 本人不交易 |
 | 下级行的 `transaction_volume` = KOL 行的 `dir_` 值 | **只有 KOL 当天只有一个活跃直属下级时成立**。一般规律是 KOL 行 `dir_transaction_volume = Σ 直属子行 transaction_volume` |
-| 约 10,261 行、1,793 uid、20260102–20261025 | 截至 1028 为 10,274 行（新增到 20261027），uid 合计 1,807（134 KOL + 1,673 非 KOL，有 20 人两边都出现） |
+| 约 10,261 行、1,793 uid、20260102–20261025 | 截至 1028 为 10,274 行（新增到 20261027），去重 uid 仍为 1,793（134 个出现过 is_kol=1，1,673 个出现过 is_kol=2，14 人两边都有） |
 | 每天约 01:50 刷新 | 成立，写入的是前一天（北京时间） |
 
 ## 6. 对 A（统计表）vs R（原始表）选择的影响
